@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9505636ff9e8649ee96849182d81bddf, type: 3}
+  m_Name: Charmander
+  m_EditorClassIdentifier: 
+  ID: 4
+  name: Charmander
+  description: Prefiere las cosas calientes. Dicen que cuando llueve le sale vapor
+    de la punta de la cola.
+  frontSprite: {fileID: 21300000, guid: 1daae1ed839754700a4a625ff00d0360, type: 3}
+  backSprite: {fileID: 21300000, guid: 915a8d8587a57451f8c09cf2f3e3f8c9, type: 3}
+  type1: 2
+  type2: 0
+  maxHP: 39
+  attack: 52
+  defense: 43
+  spAttack: 60
+  spDefense: 50
+  speed: 65
+  _learnableMoves:
+  - _move: {fileID: 11400000, guid: 986584fc08f1f4513b9fbce5b2c9cb45, type: 2}
+    level: 1
+  - _move: {fileID: 11400000, guid: 8bcdfddf29eb545a9a75cdfb7a647452, type: 2}
+    level: 5
+  - _move: {fileID: 11400000, guid: 26d083cf86cf84ee98b9cfaf862995a3, type: 2}
+    level: 7

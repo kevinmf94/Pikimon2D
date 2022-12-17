@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9505636ff9e8649ee96849182d81bddf, type: 3}
+  m_Name: Squirtle
+  m_EditorClassIdentifier: 
+  ID: 7
+  name: Squirtle
+  description: "Cuando retrae su largo cuello en el caparaz\xF3n, dispara agua a
+    una presi\xF3n incre\xEDble."
+  frontSprite: {fileID: 21300000, guid: 147c73a999dfd47df84a4a5be7100c7c, type: 3}
+  backSprite: {fileID: 21300000, guid: c493a864a8e7a41a89f3715384259f06, type: 3}
+  type1: 3
+  type2: 0
+  maxHP: 44
+  attack: 48
+  defense: 65
+  spAttack: 50
+  spDefense: 64
+  speed: 43
+  _learnableMoves:
+  - _move: {fileID: 11400000, guid: bc6b70db98c98418b896bf4f80610e7f, type: 2}
+    level: 1
+  - _move: {fileID: 11400000, guid: 8bcdfddf29eb545a9a75cdfb7a647452, type: 2}
+    level: 5
+  - _move: {fileID: 11400000, guid: a46dfff4e761b42bf85277f2f7020c8e, type: 2}
+    level: 7
