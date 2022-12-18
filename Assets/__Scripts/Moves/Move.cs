@@ -14,6 +14,6 @@ public class Move
     public Move(MoveBase moveBase)
     {
         _base = moveBase;
-        _pp = moveBase.Pp;
+        _pp = moveBase.PP;
     }
 }

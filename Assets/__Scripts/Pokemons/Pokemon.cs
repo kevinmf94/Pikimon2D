@@ -5,7 +5,7 @@ public class Pokemon
 {
     private PokemonBase _base;
     private int _level;
-    public List<Move> _moves;
+    private List<Move> _moves;
     private int _hp; // Current life
 
     public Pokemon(PokemonBase pokemonBase, int level)

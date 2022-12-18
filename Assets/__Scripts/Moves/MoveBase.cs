@@ -17,5 +17,5 @@ public class MoveBase : ScriptableObject
     public PokemonType Type => type;
     public int Power => power;
     public int Accuracy => accuracy;
-    public int Pp => pp;
+    public int PP => pp;
 }
