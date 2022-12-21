@@ -30,8 +30,6 @@ MonoBehaviour:
   - _move: {fileID: 11400000, guid: 986584fc08f1f4513b9fbce5b2c9cb45, type: 2}
     level: 1
   - _move: {fileID: 11400000, guid: 8bcdfddf29eb545a9a75cdfb7a647452, type: 2}
-    level: 1
-  - _move: {fileID: 11400000, guid: 8bcdfddf29eb545a9a75cdfb7a647452, type: 2}
     level: 5
   - _move: {fileID: 11400000, guid: 26d083cf86cf84ee98b9cfaf862995a3, type: 2}
     level: 7

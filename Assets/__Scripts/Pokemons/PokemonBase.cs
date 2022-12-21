@@ -52,19 +52,61 @@ public enum PokemonType
     Water,
     Electric,
     Grass,
-    Fight,
     Ice,
+    Fight,
     Poison,
     Ground,
     Fly,
     Psychic,
-    Rock,
     Bug,
+    Rock,
     Ghost,
     Dragon,
     Dark,
-    Fairy,
-    Steel
+    Steel,
+    Fairy
+}
+
+public class TypeMatrix
+{
+    private static float S = 1f; //Standard
+    private static float D = 2f; //Double
+    private static float M = 0.5f; //Mid
+    private static float N = 0; // None
+
+    private static float[][] _matrix =
+    {
+        /*                   NOR FIR WAT ELE GRA ICE FIG POI GRO FLY PSY BUG ROC GHO DRA DAR STE FAI*/
+        /*NOR*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, M, N, S, S, M, S},
+        /*FIR*/ new float[] {S, M, M, S, D, D, S, S, S, S, S, D, M, S, M, S, D, S},
+        /*WAT*/ new float[] {S, D, M, S, M, S, S, S, D, S, S, S, D, S, M, S, S, S},
+        /*ELE*/ new float[] {S, S, D, M, M, S, S, S, N, D, S, S, S, S, M, S, S, S},
+        /*GRA*/ new float[] {S, M, D, S, M, S, S, M, D, M, S, M, D, S, M, S, M, S},
+        /*ICE*/ new float[] {S, M, M, S, D, M, S, S, D, D, S, S, S, S, D, S, M, S},
+        //TODO: Matrix...
+        /*FIG*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*POI*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*GRO*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*FLY*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*PSY*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*BUG*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*ROC*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*GHO*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*DRA*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*DAR*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*STE*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+        /*FAI*/ new float[] {S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S, S},
+    };
+
+    public static float GetMultEffectivness(PokemonType attacker, PokemonType defender)
+    {
+        if (attacker == PokemonType.None || defender == PokemonType.None)
+        {
+            return S;
+        }
+        
+        return _matrix[(int) attacker - 1][(int) defender - 1];
+    }
 }
 
 [Serializable]

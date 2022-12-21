@@ -7,6 +7,7 @@ public class BattleDialogBox : MonoBehaviour
 {
     public Text dialogText;
     public float charactersPerSecond = 25.0f;
+    public float timeToWaitAfterText = 1.0f;
 
     [SerializeField] private GameObject actionSelect;
     [SerializeField] private GameObject movementSelect;
@@ -28,6 +29,8 @@ public class BattleDialogBox : MonoBehaviour
             dialogText.text += c;
             yield return new WaitForSeconds(1 / charactersPerSecond);
         }
+
+        yield return new WaitForSeconds(timeToWaitAfterText);
     }
 
     public void ToggleDialogText(bool activated)

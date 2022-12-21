@@ -42,7 +42,6 @@ public class BattleManager : MonoBehaviour
         enemyHUD.SetPokemonData(enemyUnit.Pokemon);
         
         yield return battleDialogBox.SetDialog($"Un {enemyUnit._base.Name} salvaje a aparecido!");
-        yield return new WaitForSeconds(1.0f);
 
         PlayerAction();
     }
@@ -69,9 +68,31 @@ public class BattleManager : MonoBehaviour
             playerUnit.Pokemon.Moves[currentSelectedMovement]);
     }
 
-    private void EnemyAction()
+    private IEnumerator EnemyAction()
     {
+        state = BattleState.EnemyMove;
+        Move move = enemyUnit.Pokemon.RandomMove();
+        yield return battleDialogBox.SetDialog($"{enemyUnit.Pokemon.Base.Name} ha " +
+                                               $"usado {move.Base.Name}!");
+        var oldHpValue = playerUnit.Pokemon.HP;
         
+        enemyUnit.PlayAttackAnimation();
+        yield return new WaitForSeconds(1.0f);
+        playerUnit.PlayReceiveAttackAnimation();
+        
+        DamageDescription damageDesc = playerUnit.Pokemon.ReceiveDamage(enemyUnit.Pokemon, move);
+        playerHUD.UpdatePokemonData(oldHpValue);
+        yield return ShowDamageDescription(damageDesc);
+        
+        if (damageDesc.Fainted)
+        {
+            playerUnit.PlayFaintAnimation();
+            yield return battleDialogBox.SetDialog($"{playerUnit.Pokemon.Base.Name} ha sido debilitado.");
+        }
+        else
+        {
+            PlayerAction();
+        }
     }
 
     private void Update()
@@ -122,5 +143,56 @@ public class BattleManager : MonoBehaviour
             battleDialogBox.SelectMovement(currentSelectedMovement,
                 playerUnit.Pokemon.Moves[currentSelectedMovement]);
         }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            battleDialogBox.ToggleMovements(false);
+            battleDialogBox.ToggleDialogText(true);
+            StartCoroutine(PerformPlayerMovement());
+        }
     }
+
+    IEnumerator PerformPlayerMovement()
+    {
+        Move move = playerUnit.Pokemon.Moves[currentSelectedMovement];
+        yield return battleDialogBox.SetDialog($"{playerUnit.Pokemon.Base.Name} ha " +
+                                               $"usado {move.Base.Name}!");
+        var oldHpValue = enemyUnit.Pokemon.HP;
+        
+        
+        playerUnit.PlayAttackAnimation();
+        yield return new WaitForSeconds(1.0f);
+        enemyUnit.PlayReceiveAttackAnimation();
+        
+        DamageDescription damageDesc = enemyUnit.Pokemon.ReceiveDamage(playerUnit.Pokemon, move);
+        enemyHUD.UpdatePokemonData(oldHpValue);
+        yield return ShowDamageDescription(damageDesc);
+        
+        if (damageDesc.Fainted)
+        {
+            enemyUnit.PlayFaintAnimation();
+            yield return battleDialogBox.SetDialog($"{enemyUnit.Pokemon.Base.Name} se ha debilitado");
+        }
+        else
+        {
+            StartCoroutine(EnemyAction());
+        }
+    }
+
+    IEnumerator ShowDamageDescription(DamageDescription desc)
+    {
+        if (desc.Critical > 1f)
+        {
+            yield return battleDialogBox.SetDialog("¡Un golp crítico!");
+        }
+
+        if (desc.Type > 1)
+        {
+            yield return battleDialogBox.SetDialog("¡Es super efectivo!");
+        } else if (desc.Type < 1)
+        {
+            yield return battleDialogBox.SetDialog("No es muy efectivo...");
+        }
+    }
+    
 }
