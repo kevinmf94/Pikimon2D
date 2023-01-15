@@ -7,6 +7,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2771702411628373728, guid: 1d353c0e6b0564240a8374c140eb7c55, type: 3}
+      propertyPath: _base
+      value: 
+      objectReference: {fileID: 11400000, guid: fcab1f3475eae4c3cb68d46014ec49b6, type: 2}
+    - target: {fileID: 2771702411628373728, guid: 1d353c0e6b0564240a8374c140eb7c55, type: 3}
+      propertyPath: _level
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771702411628373728, guid: 1d353c0e6b0564240a8374c140eb7c55, type: 3}
+      propertyPath: isPlayer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2771702411628373756, guid: 1d353c0e6b0564240a8374c140eb7c55, type: 3}
       propertyPath: m_Name
       value: EnemyPokemon

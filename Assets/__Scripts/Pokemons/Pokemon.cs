@@ -1,17 +1,19 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
+[Serializable]
 public class Pokemon
 {
-    private PokemonBase _base;
-    private int _level;
+    [SerializeField] private PokemonBase _base;
+    [SerializeField] private int _level;
     private List<Move> _moves;
     private int _hp; // Current life
 
-    public Pokemon(PokemonBase pokemonBase, int level)
+    public void InitPokemon()
     {
-        _base = pokemonBase;
-        _level = level;
         _moves = new List<Move>();
         _hp = MaxHP;
 
@@ -68,10 +70,12 @@ public class Pokemon
             Type = type1 * type2,
             Fainted = false
         };
+
+        float attack = move.Base.IsEspecialMove ? attacker.SpAttack : attacker.Attack;
+        float defense = move.Base.IsEspecialMove ? SpDefense : Defense;
         
         float modifiers = Random.Range(0.85f, 1.0f) * type1 * type2 * critical;
-        float baseDamage = (2 * attacker.Level / 5f + 2) * move.Base.Power *
-            (attacker.Attack / (float) Defense) / 50f + 2;
+        float baseDamage = (2 * attacker.Level / 5f + 2) * move.Base.Power * (attack / defense) / 50f + 2;
 
         int totalDamage = Mathf.FloorToInt(baseDamage * modifiers);
 
@@ -87,8 +91,13 @@ public class Pokemon
 
     public Move RandomMove()
     {
-        int randId = Random.Range(0, _moves.Count);
-        return _moves[randId];
+        var movesWithPP = Moves.Where(m => m.Pp > 0).ToList();
+        if (movesWithPP.Count > 0){
+            int randId = Random.Range(0, movesWithPP.Count);
+            return movesWithPP[randId];
+        }
+
+        return null;
     }
     
 }

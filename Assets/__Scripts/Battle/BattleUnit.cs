@@ -9,9 +9,13 @@ public class BattleUnit : MonoBehaviour
 {
     public PokemonBase _base;
     public int _level;
-    public bool isPlayer;
+    [SerializeField] private bool isPlayer;
+    [SerializeField] private BattleHUD hud;
     
     public Pokemon Pokemon { get; set; }
+    public bool IsPlayer => isPlayer;
+    public BattleHUD Hud => hud;
+
     private Image pokemonImage;
     private Vector3 initialPosition;
     private Color initialColor;
@@ -25,11 +29,15 @@ public class BattleUnit : MonoBehaviour
         initialColor = pokemonImage.color;
     }
 
-    public void SetupPokemon()
+    public void SetupPokemon(Pokemon pokemon)
     {
-        Pokemon = new Pokemon(_base, _level);
+        Pokemon = pokemon;
         pokemonImage.sprite = isPlayer ? 
             Pokemon.Base.BackSprite : Pokemon.Base.FrontSprite;
+        pokemonImage.color = initialColor;
+        pokemonImage.transform.position = initialPosition;
+        hud.SetPokemonData(pokemon);
+        
         PlayStartAnimation();
     }
 

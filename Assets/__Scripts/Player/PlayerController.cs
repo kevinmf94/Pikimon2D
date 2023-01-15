@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -21,12 +20,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private LayerMask solidObjectLayers, pokemonZone;
 
+    public event Action OnPokemonEncountered;
+
     private void Start()
     {
         _anim = GetComponent<Animator>();
     }
 
-    void Update()
+    public void HandleUpdate()
     {
         if (!isMoving)
         {
@@ -86,10 +87,10 @@ public class PlayerController : MonoBehaviour
     {
         if (Physics2D.OverlapCircle(transform.position, 0.2f, pokemonZone) != null)
         {
-            Debug.Log("POKEMON ZONE");
             if (Random.Range(0, 100) < 10)
             {
-                Debug.Log("Empezar batalla pokemon");
+                Debug.Log("POKEMON ZONE");
+                OnPokemonEncountered();
             }
         }
     }

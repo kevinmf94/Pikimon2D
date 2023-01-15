@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    private Image image;
+    public GameObject healthBar;
 
     public Color BarColor
     {
@@ -26,11 +26,6 @@ public class HealthBar : MonoBehaviour
             }
         }
     }
-
-    private void Awake()
-    {
-        image = GetComponent<Image>();
-    }
     
 
     /// <summary>
@@ -39,7 +34,8 @@ public class HealthBar : MonoBehaviour
     /// <param name="normalizedValue">Float value between 0.0-1.0</param>
     public void SetHP(float normalizedValue)
     {
-        StartCoroutine(SetSmoothHP(normalizedValue));
+        transform.transform.localScale = new Vector3(normalizedValue, 1.0f);
+        healthBar.GetComponent<Image>().color = BarColor;
     }
 
     public IEnumerator SetSmoothHP(float normalizedValue)
@@ -50,7 +46,7 @@ public class HealthBar : MonoBehaviour
         {
             currentScale -= updateQuantity * Time.deltaTime;
             transform.transform.localScale = new Vector3(currentScale, 1.0f);
-            image.color = BarColor;
+            healthBar.GetComponent<Image>().color = BarColor;
             yield return null;
         }
         
