@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,6 +12,13 @@ public class Pokemon
     [SerializeField] private int _level;
     private List<Move> _moves;
     private int _hp; // Current life
+
+    public Pokemon(PokemonBase pBase, int pLevel)
+    {
+        _base = pBase;
+        _level = pLevel;
+        InitPokemon();
+    }
 
     public void InitPokemon()
     {

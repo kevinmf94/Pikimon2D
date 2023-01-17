@@ -22,6 +22,8 @@ public class PokemonBase : ScriptableObject
     public PokemonType Type1 => type1;
     public PokemonType Type2 => type2;
 
+    [SerializeField] private int catchRate = 255;
+
     //Stats
     [SerializeField] private int maxHP;
     [SerializeField] private int attack;
@@ -36,6 +38,7 @@ public class PokemonBase : ScriptableObject
     public int SpAttack => spAttack;
     public int SpDefense => spDefense;
     public int Speed => speed;
+    public int CatchRate => catchRate;
 
     public Sprite FrontSprite => frontSprite;
     public Sprite BackSprite => backSprite;
