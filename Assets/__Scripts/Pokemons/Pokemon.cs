@@ -12,6 +12,7 @@ public class Pokemon
     [SerializeField] private int _level;
     private List<Move> _moves;
     private int _hp; // Current life
+    private int _exp;
 
     public Pokemon(PokemonBase pBase, int pLevel)
     {
@@ -24,6 +25,7 @@ public class Pokemon
     {
         _moves = new List<Move>();
         _hp = MaxHP;
+        _exp = _base.GetNeededExperiencieForLevel(_level);
 
         foreach (var move in _base.LearnableMoves)
         {
@@ -55,6 +57,8 @@ public class Pokemon
         set => _hp = value;
     }
     
+    public int Exp { get; set; }
+
     public int MaxHP => Mathf.FloorToInt(_base.MaxHp * _level / 20.0f) + 10;
     public int Attack => Mathf.FloorToInt(_base.Attack * _level / 100.0f) + 1;
     public int Defense => Mathf.FloorToInt(_base.Defense * _level / 100.0f) + 1;

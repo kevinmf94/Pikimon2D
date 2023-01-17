@@ -189,7 +189,7 @@ public class BattleManager : MonoBehaviour
                     OpenInventoryScreen();
                     break;
                 case (int) ActionState.Run:
-                    //todo: Huir
+                    StartCoroutine(TryToEscapeFromBattle());
                     break;
             }
         }
@@ -324,11 +324,7 @@ public class BattleManager : MonoBehaviour
         
         if (damageDesc.Fainted)
         {
-            yield return battleDialogBox.SetDialog($"{target.Pokemon.Base.Name} se ha debilitado");
-            target.PlayFaintAnimation();
-            yield return new WaitForSeconds(1.5f);
-            
-            CheckForBattleFinish(target);
+            yield return HandlePokemonFainted(target);
         }
     }
 
@@ -410,6 +406,7 @@ public class BattleManager : MonoBehaviour
             .WaitForCompletion();
 
         var numberOfShakes = TryToCatchPokemon(enemyUnit.Pokemon);
+        Debug.Log(numberOfShakes);
         for (int i = 0; i < Mathf.Min(numberOfShakes, 3); i++)
         {
             yield return new WaitForSeconds(1.2f);
@@ -509,6 +506,27 @@ public class BattleManager : MonoBehaviour
                 state = BattleState.LoseTurn;
             }
         }
+    }
+
+    IEnumerator HandlePokemonFainted(BattleUnit faintedUnit)
+    {
+        yield return battleDialogBox.SetDialog($"{faintedUnit.Pokemon.Base.Name} se ha debilitado");
+        faintedUnit.PlayFaintAnimation();
+        yield return new WaitForSeconds(1.5f);
+
+        if (!faintedUnit.IsPlayer)
+        {
+            //EXP++ y Checquear new level
+            int expBase = faintedUnit.Pokemon.Base.ExpBase;
+            int level = faintedUnit.Pokemon.Level;
+            float multiplier = (battleType == BattleType.WildPokemon) ? 1f : 1.5f;
+            int wonExp = Mathf.FloorToInt(expBase * level * multiplier / 7);
+            playerUnit.Pokemon.Exp += wonExp;
+            yield return battleDialogBox.SetDialog($"{playerUnit.Pokemon.Base.Name} ha ganado {wonExp} de experiencia");
+            yield return new WaitForSeconds(0.5f);
+        }
+            
+        CheckForBattleFinish(faintedUnit);
     }
     
 }

@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
     private bool IsAvailable(Vector3 target)
     {
-        if (Physics2D.OverlapCircle(target, 0.2f, solidObjectLayers))
+        if (Physics2D.OverlapCircle(target - new Vector3(0, -0.2f, 0), 0.2f, solidObjectLayers))
         {
             return false;
         }

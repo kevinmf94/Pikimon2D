@@ -31,6 +31,8 @@ public class PokemonBase : ScriptableObject
     [SerializeField] private int spAttack;
     [SerializeField] private int spDefense;
     [SerializeField] private int speed;
+    [SerializeField] private int expBase;
+    [SerializeField] private GrowthRate growthRate;
 
     public int MaxHp => maxHP;
     public int Attack => attack;
@@ -39,13 +41,57 @@ public class PokemonBase : ScriptableObject
     public int SpDefense => spDefense;
     public int Speed => speed;
     public int CatchRate => catchRate;
+    public int ExpBase => expBase;
+    public GrowthRate GrowthRate => growthRate;
 
     public Sprite FrontSprite => frontSprite;
     public Sprite BackSprite => backSprite;
 
     [SerializeField] private List<LearnableMove> _learnableMoves;
     public List<LearnableMove> LearnableMoves => _learnableMoves;
+
+    public int GetNeededExperiencieForLevel(int level)
+    {
+        switch (growthRate)
+        {
+            case GrowthRate.Fast:
+                return Mathf.FloorToInt(4 * Mathf.Pow(level, 3) / 5);
+            case GrowthRate.MediumFast:
+                return Mathf.FloorToInt(Mathf.Pow(level, 3));
+            case GrowthRate.MediumSlow:
+                return Mathf.FloorToInt(6 * Mathf.Pow(level, 3) / 5 + 15 * 
+                    Mathf.Pow(level, 2) + 100 * level - 140);
+            case GrowthRate.Slow:
+                return Mathf.FloorToInt(5 * Mathf.Pow(level, 3) / 4);
+            case GrowthRate.Erratic:
+                if (level < 50)
+                { 
+                    return Mathf.FloorToInt( Mathf.Pow(level, 3) * (100 - level) / 50);
+                } else if (level < 68)
+                {
+                    return Mathf.FloorToInt( Mathf.Pow(level, 3) * (150 - level) / 100);
+                } else if (level < 98)
+                {
+                    return Mathf.FloorToInt( Mathf.Pow(level, 3) * (1911 - 10*level/3) / 500);
+                }
+                else
+                {
+                    return Mathf.FloorToInt( Mathf.Pow(level, 3) * (160 - level) / 100);
+                }
+            case GrowthRate.Fluctuacting:
+                return -1;
+         }
+        
+        return -1;
+    }
+    
+    
 }
+
+public enum GrowthRate
+{
+    Erratic, Fast, MediumFast, MediumSlow, Slow, Fluctuacting
+} 
 
 public enum PokemonType
 {
