@@ -51,13 +51,13 @@ public class BattleManager : MonoBehaviour
 
     public event Action<bool> OnBattleFinish;
 
-    private PokemonParty _pokemonParty;
+    private PokemonParty playerParty;
     private Pokemon _wildPokemon;
     
     // Start is called before the first frame update
     public void HandleStartBattle(PokemonParty playerParty, Pokemon wildPokemon)
     {
-        _pokemonParty = playerParty;
+        this.playerParty = playerParty;
         _wildPokemon = wildPokemon;
         battleType = BattleType.WildPokemon;
         
@@ -75,7 +75,7 @@ public class BattleManager : MonoBehaviour
         state = BattleState.StartBattle;
 
         escapeAttempts = 0;
-        playerUnit.SetupPokemon(_pokemonParty.GetFirstHealthyPokemon());
+        playerUnit.SetupPokemon(playerParty.GetFirstHealthyPokemon());
         battleDialogBox.SetPokemonMovements(playerUnit.Pokemon.Moves);
         
         enemyUnit.SetupPokemon(_wildPokemon);
@@ -101,6 +101,7 @@ public class BattleManager : MonoBehaviour
     void BattleFinish(bool playerHasWon)
     {
         state = BattleState.FinishBattle;
+        playerParty.Pokemons.ForEach(p => p.OnBattleFinish());
         OnBattleFinish(playerHasWon);
     }
 
@@ -129,7 +130,7 @@ public class BattleManager : MonoBehaviour
     void OpenPartySelectionScreen()
     {
         state = BattleState.PartySelectScreen;
-        partyHUD.SetPartyData(_pokemonParty.Pokemons);
+        partyHUD.SetPartyData(playerParty.Pokemons);
         partyHUD.gameObject.SetActive(true);
 
         currentSelectedPokemon = 0;
@@ -199,7 +200,7 @@ public class BattleManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow))
         {
-            currentSelectedMovement = (currentSelectedMovement + 2) % 4;
+            currentSelectedMovement = (currentSelectedMovement + 2) % PokemonBase.NUMBER_OF_LERNEABLE_MOVES;
         } else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             currentSelectedMovement =
@@ -231,7 +232,7 @@ public class BattleManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow))
         {
-            currentSelectedPokemon = (currentSelectedPokemon + 2) % _pokemonParty.Pokemons.Count;
+            currentSelectedPokemon = (currentSelectedPokemon + 2) % playerParty.Pokemons.Count;
         } else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             currentSelectedPokemon =
@@ -241,13 +242,13 @@ public class BattleManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow) || 
             Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            currentSelectedPokemon %= _pokemonParty.Pokemons.Count;
+            currentSelectedPokemon %= playerParty.Pokemons.Count;
             partyHUD.UpdateSelectedPokemon(currentSelectedPokemon);
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            var selectedPokemon = _pokemonParty.Pokemons[currentSelectedPokemon];
+            var selectedPokemon = playerParty.Pokemons[currentSelectedPokemon];
             if (selectedPokemon.HP <= 0)
             {
                 partyHUD.SetMessage("No puedes enviar un pokemon debilitado");
@@ -311,18 +312,33 @@ public class BattleManager : MonoBehaviour
         yield return battleDialogBox.SetDialog($"{attacker.Pokemon.Base.Name} " +
                                                $"ha usado {move.Base.Name}!");
         
-        var oldHpValue = target.Pokemon.HP;
-        
         attacker.PlayAttackAnimation();
         yield return new WaitForSeconds(1.0f);
         target.PlayReceiveAttackAnimation();
+
+        if (move.Base.MoveType == MoveType.Stats)
+        {
+            foreach (var effect in move.Base.Effects.Boostings)
+            {
+                if (effect.target == MoveTarget.Self)
+                {
+                    attacker.Pokemon.ApplyBoosts(effect);
+                }
+                else
+                {
+                    target.Pokemon.ApplyBoosts(effect);
+                }
+            }
+        }
+        else 
+        {
+            var oldHpValue = target.Pokemon.HP;
+            DamageDescription damageDesc = target.Pokemon.ReceiveDamage(attacker.Pokemon, move);
+            StartCoroutine(target.Hud.UpdatePokemonData(oldHpValue));
+            yield return ShowDamageDescription(damageDesc);
+        }
         
-        DamageDescription damageDesc = target.Pokemon.ReceiveDamage(attacker.Pokemon, move);
-        
-        StartCoroutine(target.Hud.UpdatePokemonData(oldHpValue));
-        yield return ShowDamageDescription(damageDesc);
-        
-        if (damageDesc.Fainted)
+        if (target.Pokemon.HP <= 0)
         {
             yield return HandlePokemonFainted(target);
         }
@@ -332,7 +348,7 @@ public class BattleManager : MonoBehaviour
     {
         if (faintedUnit.IsPlayer)
         {
-            var nextPokemon = _pokemonParty.GetFirstHealthyPokemon();
+            var nextPokemon = playerParty.GetFirstHealthyPokemon();
             if (nextPokemon != null) 
             {
                 OpenPartySelectionScreen();
@@ -406,7 +422,6 @@ public class BattleManager : MonoBehaviour
             .WaitForCompletion();
 
         var numberOfShakes = TryToCatchPokemon(enemyUnit.Pokemon);
-        Debug.Log(numberOfShakes);
         for (int i = 0; i < Mathf.Min(numberOfShakes, 3); i++)
         {
             yield return new WaitForSeconds(1.2f);
@@ -417,7 +432,7 @@ public class BattleManager : MonoBehaviour
         {
             yield return battleDialogBox.SetDialog($"{enemyUnit.Pokemon.Base.name} capturado!");
             yield return pokeballSpt.DOFade(0, 1f).WaitForCompletion();
-            _pokemonParty.AddPokemonParty(enemyUnit.Pokemon);
+            playerParty.AddPokemonParty(enemyUnit.Pokemon);
 
             Destroy(pokeballInst);
             BattleFinish(true);
@@ -523,7 +538,33 @@ public class BattleManager : MonoBehaviour
             int wonExp = Mathf.FloorToInt(expBase * level * multiplier / 7);
             playerUnit.Pokemon.Exp += wonExp;
             yield return battleDialogBox.SetDialog($"{playerUnit.Pokemon.Base.Name} ha ganado {wonExp} de experiencia");
-            yield return new WaitForSeconds(0.5f);
+            yield return playerUnit.Hud.SetSmoothExp();
+            yield return new WaitForSeconds(1f);
+
+            while (playerUnit.Pokemon.NeedsToLevelUp())
+            {
+                playerUnit.Hud.SetLevelText();
+                yield return playerUnit.Hud.UpdatePokemonData(playerUnit.Pokemon.HP);
+                yield return battleDialogBox.SetDialog($"{playerUnit.Pokemon.Base.Name} ha subido de nivel!");
+
+                var newLearnableMove = playerUnit.Pokemon.GetLearneableMoveAtCurrentLevel();
+                if (newLearnableMove != null)
+                {
+                    if (playerUnit.Pokemon.Moves.Count < PokemonBase.NUMBER_OF_LERNEABLE_MOVES)
+                    {
+                        playerUnit.Pokemon.LearnMove(newLearnableMove);
+                        battleDialogBox.SetPokemonMovements(playerUnit.Pokemon.Moves);
+                        yield return battleDialogBox.SetDialog(
+                            $"{playerUnit.Pokemon.Base.Name} ha aprendido {newLearnableMove.Move.Name}");
+                    }
+                    else
+                    {
+                        //TODO: Olvidar uno de los movimientos
+                    } 
+                }
+                
+                yield return playerUnit.Hud.SetSmoothExp(true);
+            }
         }
             
         CheckForBattleFinish(faintedUnit);

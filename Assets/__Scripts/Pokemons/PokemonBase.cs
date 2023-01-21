@@ -49,6 +49,7 @@ public class PokemonBase : ScriptableObject
 
     [SerializeField] private List<LearnableMove> _learnableMoves;
     public List<LearnableMove> LearnableMoves => _learnableMoves;
+    public static int NUMBER_OF_LERNEABLE_MOVES { get; }= 4;
 
     public int GetNeededExperiencieForLevel(int level)
     {
@@ -114,6 +115,11 @@ public enum PokemonType
     Dark,
     Steel,
     Fairy
+}
+
+public enum Stat
+{
+    Attack, Defense, SpAttack, SpDefense, Speed
 }
 
 public class TypeMatrix

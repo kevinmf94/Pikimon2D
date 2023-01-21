@@ -305,6 +305,7 @@ MonoBehaviour:
   pokemonLvl: {fileID: 5159687623754462772}
   healthBar: {fileID: 5159687622138068145}
   pokemonHealth: {fileID: 5159687623668615391}
+  expBar: {fileID: 0}
 --- !u!1 &5159687622854587879
 GameObject:
   m_ObjectHideFlags: 0

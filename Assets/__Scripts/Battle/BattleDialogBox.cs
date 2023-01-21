@@ -19,8 +19,6 @@ public class BattleDialogBox : MonoBehaviour
     [SerializeField] private Text ppText;
     [SerializeField] private Text typeText;
     
-    [SerializeField] private Color selectedColor = Color.blue;
-    
     public IEnumerator SetDialog(string message)
     {
         dialogText.text = "";
@@ -53,7 +51,8 @@ public class BattleDialogBox : MonoBehaviour
     {
         for (int i = 0; i < actionTexts.Count; i++)
         {
-            actionTexts[i].color = i == selectedAction ? selectedColor : Color.black;
+            actionTexts[i].color = i == selectedAction ? ColorManager.SharedInstance.selectedColor : 
+                    ColorManager.SharedInstance.black;
         }
     }
 
@@ -76,7 +75,7 @@ public class BattleDialogBox : MonoBehaviour
     {
         for (int i = 0; i < movementTexts.Count; i++)
         {
-            movementTexts[i].color = i == selectedMovement ? selectedColor : Color.black;
+            movementTexts[i].color = i == selectedMovement ? ColorManager.SharedInstance.selectedColor : Color.black;
         }
         
         ppText.text = $"PP {move.Pp}/{move.Base.PP}";

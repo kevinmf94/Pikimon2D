@@ -9,7 +9,6 @@ using DG.Tweening;
 public class BattleUnit : MonoBehaviour
 {
     public PokemonBase _base;
-    public int _level;
     [SerializeField] private bool isPlayer;
     [SerializeField] private BattleHUD hud;
     
