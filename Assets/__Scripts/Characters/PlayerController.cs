@@ -4,34 +4,26 @@ using Mono.CompilerServices.SymbolWriter;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(CharacterAnimator))]
 public class PlayerController : MonoBehaviour
 {
-
-    private bool isMoving;
     private float offsetY = 0.2f;
-
-    [SerializeField]
-    private float speed;
 
     private Vector2 input;
     private Vector3 target;
 
-    private Animator _anim;
-    
-    [SerializeField]
-    private LayerMask solidObjectLayers, pokemonZone, interactableLayer;
+    private Character character;
 
     public event Action OnPokemonEncountered;
 
-    private void Start()
-    {
-        _anim = GetComponent<Animator>();
+    private void Awake()
+    { 
+        character = GetComponent<Character>();
     }
 
     public void HandleUpdate()
     {
-        if (!isMoving)
+        if (!character.IsMoving)
         {
             input.x = Input.GetAxisRaw("Horizontal");
             input.y = Input.GetAxisRaw("Vertical");
@@ -43,18 +35,11 @@ public class PlayerController : MonoBehaviour
 
             if (input != Vector2.zero)
             {
-                target = transform.position;
-                target.x += input.x;
-                target.y += input.y;
-                
-                _anim.SetFloat("MoveX", input.x);
-                _anim.SetFloat("MoveY", input.y);
-
-                if(IsAvailable(target)){
-                    StartCoroutine("MoveTowards");
-                }
+                StartCoroutine(character.MoveTowards(input, CheckForPokemon));
             }
         }
+        
+        character.HandleUpdate();
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -62,42 +47,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator MoveTowards()
-    {
-        isMoving = true;
-        _anim.SetBool("isMoving", true);
-        
-        while (isMoving && Vector3.Distance(transform.position, target) > Mathf.Epsilon)
-        {
-            transform.position = Vector3.MoveTowards(transform.position,
-                target, speed * Time.deltaTime);
-            yield return null;
-        }
-
-        isMoving = false;
-        transform.position = target;
-        _anim.SetBool("isMoving", false);
-        CheckForPokemon();
-    }
-
-    private bool IsAvailable(Vector3 target)
-    {
-        if (Physics2D.OverlapCircle(target - new Vector3(0, offsetY, 0), 0.2f, 
-                solidObjectLayers | interactableLayer))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     private void Interact()
     {
-        var facingDirection = new Vector3(_anim.GetFloat("MoveX"), _anim.GetFloat("MoveY"));
+        var facingDirection = new Vector3(character.Animator.MoveX, character.Animator.MoveY);
         var interactPosition = transform.position + facingDirection;
         
         Debug.DrawLine(transform.position, interactPosition, Color.magenta, 1f);
-        var collider = Physics2D.OverlapCircle(interactPosition, offsetY, interactableLayer);
+        var collider = Physics2D.OverlapCircle(interactPosition, offsetY, GameLayers.SharedInstance.InteractableLayer);
         if (collider != null)
         {
             Debug.DrawLine(transform.position, interactPosition, Color.yellow, 1f);
@@ -107,7 +63,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckForPokemon()
     {
-        if (Physics2D.OverlapCircle(transform.position, offsetY, pokemonZone) != null)
+        if (Physics2D.OverlapCircle(transform.position, offsetY, GameLayers.SharedInstance.PokemonLayer) != null)
         {
             if (Random.Range(0, 100) < 10)
             {

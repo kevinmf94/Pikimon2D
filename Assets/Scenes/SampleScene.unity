@@ -742,7 +742,8 @@ GameObject:
   - component: {fileID: 291620459}
   - component: {fileID: 291620461}
   - component: {fileID: 291620463}
-  - component: {fileID: 291620462}
+  - component: {fileID: 291620464}
+  - component: {fileID: 291620465}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -830,36 +831,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21375b245e59e4b029c5414647a08576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
-  solidObjectLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  pokemonZone:
-    serializedVersion: 2
-    m_Bits: 128
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 256
---- !u!95 &291620462
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 291620458}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0b079242f778e49959e35dc9caaefdb1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &291620463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -877,6 +848,54 @@ MonoBehaviour:
     _level: 9
   - _base: {fileID: 11400000, guid: fcab1f3475eae4c3cb68d46014ec49b6, type: 2}
     _level: 3
+--- !u!114 &291620464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 291620458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8df41990f787b4331b5aa89a06fdd0ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveX: 0
+  MoveY: 0
+  isMoving: 0
+  walkDownSprites:
+  - {fileID: -826439743, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: 553247497, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: -651334581, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: -649675897, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  walkUpSprites:
+  - {fileID: 1966594782, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: 184952653, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: 1679145588, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: 1655680996, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  walkRightSprites:
+  - {fileID: -853957530, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: -1932941392, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: -273433312, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: 1052692566, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  walkLeftSprites:
+  - {fileID: 1108504657, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: -1800310130, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: 1035012667, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+  - {fileID: -817266412, guid: bb3ab22226fca4e618c521495efa6f8a, type: 3}
+--- !u!114 &291620465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 291620458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 950565d0948874ebaa3d9ae65cc883da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 1.8
 --- !u!1 &311386016
 GameObject:
   m_ObjectHideFlags: 0
@@ -5608,6 +5627,7 @@ GameObject:
   - component: {fileID: 910597402}
   - component: {fileID: 910597403}
   - component: {fileID: 910597404}
+  - component: {fileID: 910597405}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5676,6 +5696,27 @@ MonoBehaviour:
   dialogBox: {fileID: 384312660}
   dialogText: {fileID: 1249146375}
   charactersPerSecond: 25
+--- !u!114 &910597405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910597400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff78c5b8bb295413a9057cf74b055d65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  solidObjectLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  pokemonZone:
+    serializedVersion: 2
+    m_Bits: 128
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &983031519
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,18 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
-public class CustomAnimator : MonoBehaviour
+public class CustomAnimator
 {
-    // Start is called before the first frame update
-    void Start()
+    private SpriteRenderer renderer;
+    private List<Sprite> animFrames;
+    private float frameRate;
+
+    private int currentFrame;
+    private float timer;
+
+    public List<Sprite> AnimFrames => animFrames;
+
+    public CustomAnimator(SpriteRenderer renderer, List<Sprite> animFrames, float frameRate = 0.15f)
     {
-        
+        this.renderer = renderer;
+        this.animFrames = animFrames;
+        this.frameRate = frameRate;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Start()
     {
-        
+        currentFrame = 0;
+        timer = 0f;
+        renderer.sprite = animFrames[currentFrame];
     }
+
+    public void HandleUpdate()
+    {
+        timer += Time.deltaTime;
+        if (timer > frameRate)
+        {
+            currentFrame = (currentFrame + 1) % animFrames.Count;
+            renderer.sprite = animFrames[currentFrame];
+            timer -= frameRate;
+        }
+    }
+    
 }
